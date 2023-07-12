@@ -1,0 +1,16 @@
+{
+    "editor.renderWhitespace": "selection",
+    "markdown.extension.toc.levels": "3..6",
+    "markdown.extension.toc.omittedFromToc": {
+
+        "README.md": [
+            "### Luarocks",
+            "### Manual",
+            "### TOC",
+            "### Table Of Contents",
+        ],
+    },
+    "files.exclude": {
+        "**/.git": false
+    }
+}

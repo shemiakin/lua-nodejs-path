@@ -86,8 +86,8 @@ function Path:new(isPosix)
     ---@param path string
     ---@param suffix string | nil
     ---@return string
-    function public:basename(path, suffix)
-        private:isString(path, 'path')
+    function public.basename(path, suffix)
+        private.isString(path, 'path')
         if type(suffix) ~= 'string' and type(suffix) ~= 'nil' then
             error(string.format('The "suffix" argument must be of type string. Received %s', type(suffix)))
         end
@@ -106,7 +106,7 @@ function Path:new(isPosix)
         end
 
         if private.isWin32 == true then
-            local rootInfo = private:getRootInfo(path)
+            local rootInfo = private.getRootInfo(path)
             if rootInfo ~= nil then
                 if rootInfo.type ~= 'unc' and rootInfo.path == path then
                     -- path.win32.basename('C:\\', 'anything') -> NodeJS return '\\'
@@ -129,8 +129,8 @@ function Path:new(isPosix)
     ---to the Unix dirname command. Trailing directory separators are ignored.
     ---@param path string
     ---@return string
-    function public:dirname(path)
-        private:isString(path, 'path')
+    function public.dirname(path)
+        private.isString(path, 'path')
 
         if path == '' or path == '.' or path == '..' then
             return '.'
@@ -138,7 +138,7 @@ function Path:new(isPosix)
             return '/'
         end
 
-        if private:isRoot(path) == true then
+        if private.isRoot(path) == true then
             return path
         end
 
@@ -152,7 +152,7 @@ function Path:new(isPosix)
 
         local dir = string.sub(path, 1, basenameStartPos - 1)
 
-        if private:isRoot(dir) == false then
+        if private.isRoot(dir) == false then
             dir = string.gsub(dir, private.trailingSlashPattern, '')
         end
 
@@ -167,14 +167,14 @@ function Path:new(isPosix)
     ---is returned.
     ---@param path string
     ---@return string
-    function public:extname(path)
-        private:isString(path, 'path')
+    function public.extname(path)
+        private.isString(path, 'path')
 
         if path == '' or path == '.' or path == '..' or path == '/' or path == '\\' then
             return ''
         end
 
-        local _, ext = private:parseNameAndExt(public:basename(path))
+        local _, ext = private.parseNameAndExt(public.basename(path))
         return ext
     end
 
@@ -186,7 +186,7 @@ function Path:new(isPosix)
     --- * pathObject.ext and pathObject.name are ignored if pathObject.base exists
     ---@param pathList { dir: string, root: string, base: string, name: string, ext: string }
     ---@return string
-    function public:format(pathList)
+    function public.format(pathList)
         local dir = tostring(pathList.dir or '')
         local base = tostring(pathList.base or '')
 
@@ -203,17 +203,17 @@ function Path:new(isPosix)
             base = name .. ext
         end
 
-        return public:join(dir, base)
+        return public.join(dir, base)
     end
 
     ---The path:isAbsolute() method determines if path is an absolute path.
     ---If the given path is a zero-length string, false will be returned.
     ---@param path string
     ---@return boolean
-    function public:isAbsolute(path)
-        private:isString(path, 'path')
+    function public.isAbsolute(path)
+        private.isString(path, 'path')
 
-        if private:getRootInfo(path) ~= nil then
+        if private.getRootInfo(path) ~= nil then
             return true
         end
 
@@ -228,18 +228,18 @@ function Path:new(isPosix)
     ---representing the current working directory.
     ---@param ... string
     ---@return string
-    function public:join(...)
-        local arguments = private:tablePack(...)
+    function public.join(...)
+        local arguments = private.tablePack(...)
         local segments = {}
         for i = 1, arguments.n do
-            private:isString(arguments[i], 'path')
+            private.isString(arguments[i], 'path')
             if arguments[i] ~= '' and arguments[i] ~= '.' then
                 table.insert(segments, arguments[i])
             end
         end
 
         local path = table.concat(segments, public.sep)
-        local normalizedPath = public:normalize(path)
+        local normalizedPath = public.normalize(path)
         return normalizedPath
     end
 
@@ -252,10 +252,10 @@ function Path:new(isPosix)
     ---Trailing separators are preserved.
     ---@param path string
     ---@return string
-    function public:normalize(path)
-        private:isString(path, 'path')
+    function public.normalize(path)
+        private.isString(path, 'path')
 
-        local pathDataList = private:handleJumps(private:getPathDataList(path))
+        local pathDataList = private.handleJumps(private.getPathDataList(path))
 
         local normalizedPath = pathDataList.rootSegment .. table.concat(pathDataList.segments, public.sep)
 
@@ -273,7 +273,7 @@ function Path:new(isPosix)
             return normalizedPath .. '.'
         end
 
-        return private:replaceSep(normalizedPath)
+        return private.replaceSep(normalizedPath)
     end
 
     ---The path:parse() method returns an object whose properties represent
@@ -283,8 +283,8 @@ function Path:new(isPosix)
     ---in a case-insensitive manner, this function does not.
     ---@param path string
     ---@return { dir: string, root: string, base: string, name: string, ext: string }
-    function public:parse(path)
-        private:isString(path, 'path')
+    function public.parse(path)
+        private.isString(path, 'path')
 
         local parsedPath = {
             dir = '',
@@ -298,18 +298,18 @@ function Path:new(isPosix)
             return parsedPath
         end
 
-        local rootInfo = private:getRootInfo(path)
+        local rootInfo = private.getRootInfo(path)
         if rootInfo ~= nil then
             parsedPath.root = rootInfo.path
         end
 
-        parsedPath.dir = public:dirname(path)
+        parsedPath.dir = public.dirname(path)
         if rootInfo == nil and parsedPath.dir == '.' then
             parsedPath.dir = ''
         end
 
-        parsedPath.base = public:basename(path)
-        parsedPath.name, parsedPath.ext = private:parseNameAndExt(parsedPath.base)
+        parsedPath.base = public.basename(path)
+        parsedPath.name, parsedPath.ext = private.parseNameAndExt(parsedPath.base)
 
         return parsedPath
     end
@@ -323,20 +323,20 @@ function Path:new(isPosix)
     ---@param from string
     ---@param to string
     ---@return string relativePath
-    function public:relative(from, to)
-        private:isString(from, 'from')
-        private:isString(to, 'to')
+    function public.relative(from, to)
+        private.isString(from, 'from')
+        private.isString(to, 'to')
 
-        if public:isAbsolute(from) == false then
-            from = private:cwd() .. public.sep .. from
+        if public.isAbsolute(from) == false then
+            from = private.cwd() .. public.sep .. from
         end
 
-        if public:isAbsolute(to) == false then
-            to = private:cwd() .. public.sep .. to
+        if public.isAbsolute(to) == false then
+            to = private.cwd() .. public.sep .. to
         end
 
-        local fromList = private:handleJumps(private:getPathDataList(from))
-        local toList = private:handleJumps(private:getPathDataList(to))
+        local fromList = private.handleJumps(private.getPathDataList(from))
+        local toList = private.handleJumps(private.getPathDataList(to))
 
         local countOfIdenticalSegments = 0
         local indexOfTheDifferentSegment
@@ -362,7 +362,7 @@ function Path:new(isPosix)
         local pathTo = ''
         if indexOfTheDifferentSegment ~= nil then
             pathTo = table.concat({
-                private:tableUnpack(toList.segments, indexOfTheDifferentSegment, #toList.segments)
+                private.tableUnpack(toList.segments, indexOfTheDifferentSegment, #toList.segments)
             }, public.sep)
         end
 
@@ -374,7 +374,7 @@ function Path:new(isPosix)
         end
 
         if relativePath == '.' then
-            -- Replacing because by default public:join() for an empty path returns '.'
+            -- Replacing because by default public.join() for an empty path returns '.'
             relativePath = ''
         end
 
@@ -397,27 +397,27 @@ function Path:new(isPosix)
     ---@usage path:resolve('/foo/bar', './baz') -- Returns: '/foo/bar/baz'
     ---@param ... string
     ---@return string resolvedPath
-    function public:resolve(...)
-        local arguments = private:tablePack(...)
+    function public.resolve(...)
+        local arguments = private.tablePack(...)
         for i = 1, arguments.n do
-            private:isString(arguments[i], 'path')
+            private.isString(arguments[i], 'path')
         end
 
         local pathList = {}
         for _, path in ipairs(arguments) do
             if path ~= '.' and string.len(path) > 0 then
-                if public:isAbsolute(path) == true then
+                if public.isAbsolute(path) == true then
                     pathList = {}
                 end
                 table.insert(pathList, path)
             end
         end
 
-        if #pathList == 0 or public:isAbsolute(pathList[1]) == false then
-            table.insert(pathList, 1, private:cwd())
+        if #pathList == 0 or public.isAbsolute(pathList[1]) == false then
+            table.insert(pathList, 1, private.cwd())
         end
 
-        local resolvedPath = public:normalize(table.concat(pathList, public.sep))
+        local resolvedPath = public.normalize(table.concat(pathList, public.sep))
 
         resolvedPath = string.gsub(resolvedPath, private.trailingSlashPattern, '')
 
@@ -431,20 +431,20 @@ function Path:new(isPosix)
     ---without modifications.
     ---@param path string | any
     ---@return string | any namespacedPath
-    function public:toNamespacedPath(path)
+    function public.toNamespacedPath(path)
         if private.isPosix or type(path) ~= 'string' or string.len(path) == 0 or path == '.' or path == '..' then
             return path
         end
 
         if string.find(path, '^%a:.+$') ~= nil then
-            path = private:replaceSep(path)
+            path = private.replaceSep(path)
 
             if string.len(path) == 2 then
                 -- Replacing 'C:' on current working directory
-                path = public:join(path, private:cwd())
+                path = public.join(path, private.cwd())
             end
 
-            return public:normalize('\\\\?\\' .. path)
+            return public.normalize('\\\\?\\' .. path)
         end
 
         return path
@@ -452,7 +452,7 @@ function Path:new(isPosix)
 
     ---@param path string
     ---@return { path: string, pattern: string, preserveJump: boolean, type: 'root'|'unc'|'drive'|'net'  } | nil rootList
-    function private:getRootInfo(path)
+    function private.getRootInfo(path)
         for _, list in ipairs(private.rootPatternsLists) do
             local match = string.match(path, list.pattern)
 
@@ -464,20 +464,20 @@ function Path:new(isPosix)
         return nil
     end
 
-    function private:isString(value, argumentName)
+    function private.isString(value, argumentName)
         if type(value) ~= 'string' then
             error(string.format('The "%s" argument must be of type string. Received %s', argumentName, type(value)))
         end
     end
 
     ---@return string
-    function private:cwd()
+    function private.cwd()
         return os.getenv('PWD') or io.popen('cd'):read()
     end
 
     ---@param path string
     ---@return string[]
-    function private:splitBySep(path)
+    function private.splitBySep(path)
         local segments = {}
         for segment in string.gmatch(path, private.sepSplitPattern) do
             table.insert(segments, segment)
@@ -488,7 +488,7 @@ function Path:new(isPosix)
     ---@param basename string
     ---@return string name
     ---@return string ext
-    function private:parseNameAndExt(basename)
+    function private.parseNameAndExt(basename)
         if basename == '' or basename == '.' or basename == '..' then
             return basename, ''
         end
@@ -505,7 +505,7 @@ function Path:new(isPosix)
 
     ---@param path string
     ---@return string path
-    function private:replaceSep(path)
+    function private.replaceSep(path)
         if private.isWin32 == true then
             path = string.gsub(path, '/', '\\')
         end
@@ -514,14 +514,14 @@ function Path:new(isPosix)
 
     ---@param path any
     ---@return { rootSegment: string, segments: string[], isAbsolute: boolean } pathDataList
-    function private:getPathDataList(path)
+    function private.getPathDataList(path)
         local pathDataList = {
             rootSegment = '',
             segments = {},
             isAbsolute = false
         }
 
-        local rootInfo = private:getRootInfo(path)
+        local rootInfo = private.getRootInfo(path)
         if rootInfo ~= nil then
             pathDataList.isAbsolute = true
             pathDataList.rootSegment = rootInfo.path
@@ -535,7 +535,7 @@ function Path:new(isPosix)
         return pathDataList
     end
 
-    function private:handleJumps(pathDataList)
+    function private.handleJumps(pathDataList)
         local segments = {}
         local preserveJump = pathDataList.isAbsolute == false
 
@@ -572,12 +572,12 @@ function Path:new(isPosix)
 
     ---@param path string
     ---@return boolean
-    function private:isRoot(path)
-        local root = private:getRootInfo(path)
+    function private.isRoot(path)
+        local root = private.getRootInfo(path)
         return root ~= nil and root.path == path
     end
 
-    function private:tablePack(...)
+    function private.tablePack(...)
         local lua_version = _VERSION
         if lua_version == "Lua 5.1" then
             local t = {...}
@@ -587,7 +587,7 @@ function Path:new(isPosix)
         return table.pack(...)
     end
 
-    function private:tableUnpack(...)
+    function private.tableUnpack(...)
         local lua_version = _VERSION
         if lua_version == "Lua 5.1" then
             return unpack(...)

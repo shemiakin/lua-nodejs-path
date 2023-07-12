@@ -1,11 +1,5 @@
 # lua-nodejs-path
 
-[![Vdersion](https://img.shields.io/badge/lua--nodejs--path-1.0.0-blue)]()
-[![Lua Versions Support](https://img.shields.io/badge/Lua-5.1–5.4-default)]()
-[![LuaJIT Versions Support](https://img.shields.io/badge/LuaJIT-2.0–2.1-default)]()
-![Stars are welcome](https://img.shields.io/badge/Stars_are_welcome-★-yellow)
-[![license](https://img.shields.io/github/license/shemiakin/lua-nodejs-path.svg)](https://github.com/shemiakin/lua-nodejs-path/blob/v1.0.0/LICENSE)
-
 ![Version](https://badgen.net/static/Version/1.0.0)
 ![Lua Versions Support](https://badgen.net/badge/Lua/5.1–5.4/green)
 ![LuaJIT Versions Support](https://badgen.net/static/LuaJIT/2.x/green)

@@ -12,10 +12,10 @@ The module provides utilities for working with file and directory paths. Works s
 Quickstart:
 
     local path = require('nodejs-path')
-    local filepath = path:join('somedir', 'somefile.txt')
+    local filepath = path.join('somedir', 'somefile.txt')
     print('File path: ' .. filepath)
-    print('Is absolute: ' .. tostring(path:isAbsolute(filepath)))
-    print('File name: ' .. path:parse(filepath).name)
+    print('Is absolute: ' .. tostring(path.isAbsolute(filepath)))
+    print('File name: ' .. path.parse(filepath).name)
 
 See full documentation at GitHub https://github.com/shemiakin/lua-nodejs-path
     ]],
